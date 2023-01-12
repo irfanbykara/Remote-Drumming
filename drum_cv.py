@@ -2,6 +2,12 @@ import cv2
 from cvzone.HandTrackingModule import HandDetector
 import pygame
 import sys
+import consts
+import utils
+
+#Basic util to calculate the euclidian distance
+
+
 
 
 # Here we get the video stream from our webcam
@@ -10,27 +16,8 @@ cap.set(3,600)
 cap.set(4,300)
 detector = HandDetector( detectionCon=0.8 )
 
-
-pygame.mixer.init()
-snare_sound = pygame.mixer.Sound('resources/snare.wav')
-kick_sound = pygame.mixer.Sound('resources/kick.wav')
-hh_sound = pygame.mixer.Sound('resources/hihat.wav')
-
-# Color consts
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-
-# Wav consts
-SNARE_POS = (150,150)
-HH_POS = (80,100)
-KICK_POS = (300,250)
-
-
-pygame.init()
-
 # Set the width and height of the screen [width, height]
-size = (650, 412)
-screen = pygame.display.set_mode( size )
+screen = pygame.display.set_mode( consts.SIZE )
 pygame.display.set_caption( "Remote Drum" )
 
 # Let's declare our image files to be used in the game.
@@ -38,10 +25,6 @@ bg = pygame.image.load("resources/drum1.png")
 aim = pygame.image.load("resources/aim2.png")
 aim = pygame.transform.scale(aim, (25, 25))
 pygame.display.flip()
-
-#Basic util to calculate the euclidian distance
-def get_distance(pos1,pos2):
-    return ((pos1[0]-pos2[0])**2+(pos1[1]-pos2[1])**2)**0.5
 
 
 def aim_handle(hands, detector):
@@ -53,16 +36,7 @@ def aim_handle(hands, detector):
             screen.blit(aim, (cursor2[0] - 10, cursor2[1] - 10))
             length2, info2, = detector.findDistance(lmList2[8], lmList2[12], )
             if length2 < 30:
-                pygame.draw.circle(screen, BLACK, (cursor2[0], cursor2[1]), 10)
-                if (get_distance((cursor2[0], cursor2[1]), HH_POS)) < 50:
-                    hh_sound.play()
-                    pygame.time.wait(int(hh_sound.get_length() * 100))
-                if (get_distance((cursor2[0], cursor2[1]), SNARE_POS)) < 50:
-                    snare_sound.play()
-                    pygame.time.wait(int(snare_sound.get_length() * 1000))
-                if (get_distance((cursor2[0], cursor2[1]), KICK_POS)) < 150:
-                    kick_sound.play()
-                    pygame.time.wait(int(kick_sound.get_length() * 1000))
+                play_drum(consts.BLACK, cursor2)
 
             cursor = lmList[8]
 
@@ -71,18 +45,19 @@ def aim_handle(hands, detector):
             length, info, = detector.findDistance( lmList[8], lmList[12], )
 
             if length < 30:
-                pygame.draw.circle( screen, RED, (cursor[0], cursor[1]), 10 )
-                if (get_distance((cursor[0], cursor[1]),HH_POS))<50:
-                    hh_sound.play()
-                    pygame.time.wait(int(hh_sound.get_length() * 100))
-                if (get_distance((cursor[0], cursor[1]),SNARE_POS))<50:
-                    snare_sound.play()
-                    pygame.time.wait(int(snare_sound.get_length() * 1000))
-                if (get_distance((cursor[0], cursor[1]),KICK_POS))<150:
-                    kick_sound.play()
-                    pygame.time.wait(int(kick_sound.get_length() * 1000))
+                play_drum(consts.RED,cursor)
 
-
+def play_drum(color,cursor):
+    pygame.draw.circle(screen, color, (cursor[0], cursor[1]), 10)
+    if (utils.get_distance((cursor[0], cursor[1]), consts.HH_POS)) < 50:
+        consts.HH_SOUND.play()
+        pygame.time.wait(int(consts.HH_SOUND.get_length() * 100))
+    if (utils.get_distance((cursor[0], cursor[1]), consts.SNARE_POS)) < 50:
+        consts.SNARE_SOUND.play()
+        pygame.time.wait(int(consts.SNARE_SOUND.get_length() * 1000))
+    if (utils.get_distance((cursor[0], cursor[1]), consts.KICK_POS)) < 150:
+        consts.KICK_SOUND.play()
+        pygame.time.wait(int(consts.KICK_SOUND.get_length() * 1000))
 
 
 def main():
