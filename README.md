@@ -5,20 +5,19 @@ https://user-images.githubusercontent.com/63783207/143765393-97f15457-1523-40fa-
 
 
 
-## to play drums
-Both hands need to be in visible and recognized
-Your hands need to be the correct distance (=size in screen) indicated by a circle (aim means too close)
+## To play drums
+Both hands need to be in visible and recognized.
+When you see the aim on the screen, bring your index&middle finger together
+on the drum parts. (kick, snare and hihat for now). And let the beat go on !
 
-## to run
+## To run
 
 ```
-pip install cvzone
-pip install mediapipe
-pip install pygame
+pip install -r requirements.txt
 ```
 
 and then 
 
 ```
-python drum_cv.py
+python main.py
 ```
